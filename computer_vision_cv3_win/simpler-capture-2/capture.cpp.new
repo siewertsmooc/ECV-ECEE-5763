@@ -1,0 +1,35 @@
+/*
+ *
+ *  Example by Sam Siewert 
+ *
+ *  Updated 5/22/18 for OpenCV 3.x for Windows
+ *
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+
+using namespace cv;
+using namespace std;
+
+#define HRES 640
+#define VRES 480
+
+
+int main()
+{
+   VideoCapture v(0);
+   namedWindow("l");
+   if (!v.isOpened())return 2;
+   while (1)
+   {
+      Mat f;
+      v.read(f);
+      imshow("l", f);
+      if (char c = waitKey(10) == 27) break;
+   }
+   cvDestroyWindow("l"); 
+};

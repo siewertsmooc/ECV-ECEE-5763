@@ -1,0 +1,13 @@
+To install OpenCV 3.x on Windows, see -
+https://www.learnopencv.com/install-opencv3-on-windows/
+
+Once installed, you can build these examples in the build subdirectory of each
+example with:
+
+mkdir build
+cd build
+cmake -G "Visual Studio 14 2015 Win64" ..
+
+cmake --build . --config Release
+
+Run capture.exe in Release
