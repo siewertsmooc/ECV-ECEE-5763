@@ -16,7 +16,7 @@ all:	canny houghline houghcirc sobel cannycam pyrUpDown
 
 clean:
 	-rm -f *.o *.d
-	-rm -f canny houghline houghcirc
+	-rm -f canny houghline houghcirc cannycam pyrUpDown sobel
 
 houghcirc: houghcirc.o
 	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $@.o `pkg-config --libs opencv4` $(LIBS)

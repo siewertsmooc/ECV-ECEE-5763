@@ -1,5 +1,3 @@
-// Written by Sam Siewert and XXX
-//
 #include <iostream>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/core/core.hpp>
@@ -8,19 +6,15 @@ double alpha=1.0;  int beta=10;  /* contrast and brightness control */
 
 int main( int argc, char** argv )
 {
-    // Mat is a matrix object
-    Mat image = imread( argv[1] ); // read in image file
-
-    Mat new_image = Mat::zeros( image.size(), image.type() );
-
     // Check command line arguments
-    if(argc < 3) 
+    if(argc < 2) 
     {
 	    printf("Usage: brighten <input-file>\n");
-            exit(-1);
+        exit(-1);
     }
 
-
+    Mat image = imread( argv[1] ); // read in image file
+    Mat new_image = Mat::zeros( image.size(), image.type() );
     std::cout<<"* Enter alpha brighten factor [1.0-3.0]: ";std::cin>>alpha;
     std::cout<<"* Enter beta contrast increase value [0-100]: "; std::cin>>beta;
 
