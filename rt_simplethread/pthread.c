@@ -18,6 +18,38 @@
 #define ERROR (-1)
 #define OK (0)
 
+// NVIDIA JETSON SPECIFIC SCHED_FIFO REQUIREMENT
+//
+// Before running any RT scheduling software on a Jetson Orin or any system with JetPack
+// newer than 4.x (5.x or 6.x for example), note that you must adjust the Linux kernel 
+// configuration to allow for RT schedulign and RT priorities with:
+//
+// sudo sysctl -w kernel.sched_rt_runtime_us=-1
+//
+// Red Hat has excellent documentation on RT policies and security, but this seems to be
+// NVIDIA specific.
+//
+// See these excellent references for more discussion:
+//
+// 1) https://docs.redhat.com/en/documentation/red_hat_enterprise_linux_for_real_time/8/html-single/understanding_rhel_for_real_time
+// 2) https://linux.web.cern.ch/mrg/2/Realtime_Reference_Guide/
+// 3) https://docs.redhat.com/en/documentation/red_hat_enterprise_linux_for_real_time/9/html/understanding_rhel_for_real_time
+//
+// However, note specific help for various platforms like NVIDIA:
+//
+// 1) https://forums.developer.nvidia.com/c/agx-autonomous-machines/jetson-embedded-systems
+// 2) https://forums.developer.nvidia.com/t/pthread-setschedparam-sched-fifo-fails/64394/4
+//
+// For Raspberry Pi:
+//
+// 1) https://www.raspberrypi.com/documentation/computers/linux_kernel.html
+// 2) https://forums.raspberrypi.com/viewtopic.php?t=308134 (example of forum discussion on RT Linux extensions on the R-Pi)
+//
+// Finall Linux manual pages:
+//
+// 1) https://man7.org/linux/man-pages/man7/sched.7.html
+// 2) https://man7.org/linux/man-pages/man2/sched_setscheduler.2.html (note other RT manual pages at the bottom)
+//
 
 unsigned int idx = 0, jdx = 1;
 unsigned int seqIterations = 47;
@@ -215,6 +247,7 @@ int main (int argc, char *argv[])
 
    print_scheduler();
    rc=sched_getparam(mainpid, &main_param);
+   //main_param.sched_priority=rt_min_prio;
    main_param.sched_priority=rt_max_prio;
 
    if(rc=sched_setscheduler(getpid(), SCHED_FIFO, &main_param) < 0)
