@@ -1,0 +1,5 @@
+To build this code for OpenCV 4.5.4, you must build CUDA accelerated OpenCV.
+
+This video should help - https://www.youtube.com/watch?v=art0-99fFa8
+
+
