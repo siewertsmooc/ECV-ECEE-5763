@@ -13,8 +13,7 @@ using namespace cv;
 #define ESCAPE_KEY (27)
 #define SYSTEM_ERROR (-1)
 
-
-Mat canny_frame, timg_gray, timg_grad;
+Mat edge_frame, timg_gray, timg_grad;
 Mat frame;
 
 int lowThreshold = 0;
@@ -24,23 +23,36 @@ const int kernel_size = 3;
 const char* window_name = "Edge Map";
 
 
-void CannyThreshold(int, void*)
+void SobelThreshold(int, void*)
 {
-    cvtColor(frame, timg_gray, COLOR_BGR2GRAY);
+  // Generate grad_x and grad_y
+  Mat grad_x, grad_y;
+  Mat abs_grad_x, abs_grad_y;
+  Mat src, src_gray;
+  int ddepth = CV_16S;
+  int scale = 1;
+  Mat grad;
+  int delta = lowThreshold;
 
-    /// Reduce noise with a kernel 3x3
-    blur( timg_gray, canny_frame, Size(3,3) );
+  cvtColor(frame, timg_gray, COLOR_BGR2GRAY);
 
-    /// Canny detector
-    Canny( canny_frame, canny_frame, lowThreshold, lowThreshold*ratio, kernel_size );
+  /// Reduce noise with a kernel 3x3
+  blur( timg_gray, edge_frame, Size(3,3) );
 
-    /// Using Canny's output as a mask, we display our result
-    timg_grad = Scalar::all(0);
+  /// Gradient X
+  //Scharr( src_gray, grad_x, ddepth, 1, 0, scale, delta, BORDER_DEFAULT );
+  Sobel( timg_gray, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT );
+  convertScaleAbs( grad_x, abs_grad_x );
 
-    frame.copyTo( timg_grad, canny_frame);
+  /// Gradient Y
+  //Scharr( src_gray, grad_y, ddepth, 0, 1, scale, delta, BORDER_DEFAULT );
+  Sobel( timg_gray, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT );
+  convertScaleAbs( grad_y, abs_grad_y );
 
-    imshow( window_name, timg_grad );
+  /// Total Gradient (approximate)
+  addWeighted( abs_grad_x, 0.5, abs_grad_y, 0.5, 0, timg_grad );
 
+  imshow( window_name, timg_grad );
 }
 
 
@@ -80,7 +92,7 @@ int main( int argc, char** argv )
       
       imshow("video_display", frame);
 
-      CannyThreshold(0, 0);
+      SobelThreshold(0, 0);
 
       if ((winInput = waitKey(1)) == ESCAPE_KEY)
       //if ((winInput = waitKey(0)) == ESCAPE_KEY)
@@ -94,7 +106,7 @@ int main( int argc, char** argv )
 
       clock_gettime(CLOCK_MONOTONIC, &curr_t);
       curr_time = (double)curr_t.tv_sec + ((double)curr_t.tv_nsec) / 1000000000.0;
-      printf("Canny time=%lf msec, fps=%lf\n", (curr_time-prev_time)*1000.0, 1.0/(curr_time-prev_time));
+      printf("Sobel time=%lf msec\n", (curr_time-prev_time)*1000.0);
 
    }
 
