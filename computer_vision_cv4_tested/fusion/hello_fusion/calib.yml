@@ -1,0 +1,49 @@
+%YAML:1.0
+image_width: 640
+image_height: 480
+
+# Intrinsics (example values)
+K1: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [700.0, 0.0, 320.0,
+         0.0, 700.0, 240.0,
+         0.0, 0.0, 1.0]
+
+D1: !!opencv-matrix
+  rows: 1
+  cols: 5
+  dt: d
+  data: [-0.10, 0.02, 0.0, 0.0, 0.0]
+
+K2: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [700.0, 0.0, 320.0,
+         0.0, 700.0, 240.0,
+         0.0, 0.0, 1.0]
+
+D2: !!opencv-matrix
+  rows: 1
+  cols: 5
+  dt: d
+  data: [-0.10, 0.02, 0.0, 0.0, 0.0]
+
+# Extrinsics from Left -> Right (example: parallel cameras)
+R: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.0, 0.0, 0.0,
+         0.0, 1.0, 0.0,
+         0.0, 0.0, 1.0]
+
+# Translation (baseline). Units matter: here it's meters (6 cm baseline).
+# Sign convention: many setups use negative X for right camera relative to left.
+T: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [-0.06, 0.0, 0.0]
