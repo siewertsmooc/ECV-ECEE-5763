@@ -7,16 +7,16 @@ CFLAGS= -O0 -g $(INCLUDE_DIRS) $(CDEFS)
 LIBS= -L/usr/lib -lopencv_core -lopencv_flann -lopencv_video -lrt
 
 HFILES= 
-CFILES= capture.cpp capture_timed.cpp ipcapture.cpp diffcapture.cpp brighten.cpp gstream_cap.cpp videowriter.cpp gstream_simple.cpp
+CFILES= capture.cpp capture_timed.cpp ipcapture.cpp diffcapture.cpp brighten.cpp gstream_cap.cpp videowriter.cpp gstream_simple.cpp opencv_version.cpp contours.cpp
 
 SRCS= ${HFILES} ${CFILES}
 OBJS= ${CFILES:.cpp=.o}
 
-all:	capture capture_timed ipcapture diffcapture brighten gstream_cap videowriter
+all:	capture capture_timed ipcapture diffcapture brighten gstream_cap videowriter opencv_version contours
 
 clean:
 	-rm -f *.o *.d
-	-rm -f capture ipcapture diffcapture brighten gstream_cap capture_timed videowriter
+	-rm -f capture ipcapture diffcapture brighten gstream_cap capture_timed videowriter opencv_version
 
 videowriter: videowriter.o
 	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $@.o `pkg-config --libs opencv4` $(LIBS)
@@ -25,6 +25,9 @@ gstream_cap: gstream_cap.o
 	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $@.o `pkg-config --libs opencv4` $(LIBS)
 
 capture: capture.o
+	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $@.o `pkg-config --libs opencv4` $(LIBS)
+
+opencv_version: opencv_version.o
 	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $@.o `pkg-config --libs opencv4` $(LIBS)
 
 capture_timed: capture_timed.o
@@ -38,6 +41,9 @@ diffcapture: diffcapture.o
 	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $@.o `pkg-config --libs opencv4` $(LIBS)
 
 brighten: brighten.o
+	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $@.o `pkg-config --libs opencv4` $(LIBS)
+
+contours: contours.o
 	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $@.o `pkg-config --libs opencv4` $(LIBS)
 
 depend:
