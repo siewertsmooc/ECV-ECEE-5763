@@ -2,7 +2,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/core/core.hpp>
 using namespace cv; using namespace std;
-double alpha=1.0;  int beta=10;  /* contrast and brightness control */
+double alpha=1.0;  int bias=10;  /* contrast and brightness control */
 
 int main( int argc, char** argv )
 {
@@ -16,16 +16,16 @@ int main( int argc, char** argv )
     Mat image = imread( argv[1] ); // read in image file
     Mat new_image = Mat::zeros( image.size(), image.type() );
     std::cout<<"* Enter alpha brighten factor [1.0-3.0]: ";std::cin>>alpha;
-    std::cout<<"* Enter beta contrast increase value [0-100]: "; std::cin>>beta;
+    std::cout<<"* Enter bias contrast increase value [0-100]: "; std::cin>>bias;
 
-    // Do the operation new_image(i,j) = alpha*image(i,j) + beta
+    // Do the operation new_image(i,j) = alpha*image(i,j) + bias
     for( int y = 0; y < image.rows; y++ )
     {
         for( int x = 0; x < image.cols; x++ )
         { 
             for( int c = 0; c < 3; c++ )
                 new_image.at<Vec3b>(y,x)[c] =
-                    saturate_cast<uchar>( alpha*( image.at<Vec3b>(y,x)[c] ) + beta );
+                    saturate_cast<uchar>( alpha*( image.at<Vec3b>(y,x)[c] ) + bias );
         }
     }
 
