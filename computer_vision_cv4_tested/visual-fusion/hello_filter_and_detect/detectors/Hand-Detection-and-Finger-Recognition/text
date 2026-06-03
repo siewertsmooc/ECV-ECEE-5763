@@ -1,0 +1,1 @@
+g++ BackgroundRemover.cpp FingerCount.cpp FaceDetector.cpp SkinDetector.cpp main.cpp -O0 -g -I/usr/include/opencv4 -o output `pkg-config --libs opencv4` -L/usr/lib -lopencv_core -lopencv_flann -lopencv_video -lrt
