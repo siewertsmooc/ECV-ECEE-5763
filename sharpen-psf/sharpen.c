@@ -5,8 +5,8 @@
 #include <fcntl.h>
 
 
-#define IMG_HEIGHT (300)
-#define IMG_WIDTH (400)
+#define BASE_HEIGHT (300)
+#define BASE_WIDTH (400)
 
 typedef double FLOAT;
 
@@ -16,13 +16,7 @@ typedef unsigned char UINT8;
 
 // PPM Edge Enhancement Code
 //
-UINT8 header[22];
-UINT8 R[IMG_HEIGHT*IMG_WIDTH];
-UINT8 G[IMG_HEIGHT*IMG_WIDTH];
-UINT8 B[IMG_HEIGHT*IMG_WIDTH];
-UINT8 convR[IMG_HEIGHT*IMG_WIDTH];
-UINT8 convG[IMG_HEIGHT*IMG_WIDTH];
-UINT8 convB[IMG_HEIGHT*IMG_WIDTH];
+UINT8 header[64];
 
 #define K 4.0
 
@@ -34,6 +28,7 @@ int main(int argc, char *argv[])
     int fdin, fdout, bytesRead=0, bytesLeft, i, j;
     UINT64 microsecs=0, millisecs=0;
     FLOAT temp;
+    UINT32 IMG_HEIGHT, IMG_WIDTH;
     
     if(argc < 3)
     {
@@ -57,7 +52,7 @@ int main(int argc, char *argv[])
         //    printf("Output file=%s opened successfully\n", "sharpen.ppm");
     }
 
-    bytesLeft=21;
+    bytesLeft=63;
 
     //printf("Reading header\n");
 
@@ -68,16 +63,35 @@ int main(int argc, char *argv[])
         bytesLeft -= bytesRead;
     } while(bytesLeft > 0);
 
-    header[21]='\0';
+    header[63]='\0';
 
-    //printf("header = %s\n", header); 
+    printf("header = %s\n", header);
+    
+    fflush(stdout); 
+
+    // Read image size
+    if(sscanf(header, "%*s %u %u", &IMG_WIDTH, &IMG_HEIGHT) != 2)
+    {
+        printf("Error: failed to parse image dimensions\n");
+        IMG_WIDTH = BASE_WIDTH;
+	IMG_HEIGHT = BASE_HEIGHT;
+    }
+
+    printf("width=%u\nheight=%u\n", IMG_WIDTH, IMG_HEIGHT);
+   
+    UINT8 R[IMG_HEIGHT*IMG_WIDTH];
+    UINT8 G[IMG_HEIGHT*IMG_WIDTH];
+    UINT8 B[IMG_HEIGHT*IMG_WIDTH];
+    UINT8 convR[IMG_HEIGHT*IMG_WIDTH];
+    UINT8 convG[IMG_HEIGHT*IMG_WIDTH];
+    UINT8 convB[IMG_HEIGHT*IMG_WIDTH];
 
     // Read RGB data
     for(i=0; i<IMG_HEIGHT*IMG_WIDTH; i++)
     {
-        read(fdin, (void *)&R[i], 1); convR[i]=R[i];
-        read(fdin, (void *)&G[i], 1); convG[i]=G[i];
-        read(fdin, (void *)&B[i], 1); convB[i]=B[i];
+        if(0 > read(fdin, (void *)&R[i], 1)) printf("Error reading R pixel\n"); convR[i]=R[i];
+        if(0 > read(fdin, (void *)&G[i], 1)) printf("Error reading G pixel\n"); convG[i]=G[i];
+        if(0 > read(fdin, (void *)&B[i], 1)) printf("Error reading B pixel\n"); convB[i]=B[i];
     }
 
     // Skip first and last row, no neighbors to convolve with
@@ -131,14 +145,14 @@ int main(int argc, char *argv[])
         }
     }
 
-    write(fdout, (void *)header, 21);
+    if(0 > write(fdout, (void *)header, 63)) printf("Error writing header\n");
 
     // Write RGB data
     for(i=0; i<IMG_HEIGHT*IMG_WIDTH; i++)
     {
-        write(fdout, (void *)&convR[i], 1);
-        write(fdout, (void *)&convG[i], 1);
-        write(fdout, (void *)&convB[i], 1);
+        if(0 > write(fdout, (void *)&convR[i], 1)) printf("Error writing R pixel\n");
+        if(0 > write(fdout, (void *)&convG[i], 1)) printf("Error writing G pixel\n");
+        if(0 > write(fdout, (void *)&convB[i], 1)) printf("Error writing B pixel\n");
     }
 
 

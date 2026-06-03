@@ -7,16 +7,16 @@ CDEFS=
 #CFLAGS= -O0 -msse3 -malign-double $(INCLUDE_DIRS) $(CDEFS)
 #CFLAGS= -O2 -msse3 -malign-double $(INCLUDE_DIRS) $(CDEFS)
 #CFLAGS= -O3 $(INCLUDE_DIRS) $(CDEFS)
-CFLAGS= -O3 -msse3 $(INCLUDE_DIRS) $(CDEFS)
+CFLAGS= -O3 -mcpu=native $(INCLUDE_DIRS) $(CDEFS)
 #CFLAGS= -O3 -mssse3 $(INCLUDE_DIRS) $(CDEFS)
 LIBS=-lpthread
 
-PRODUCT=sharpen_grid
-#PRODUCT=sharpen
+#PRODUCT=sharpen_grid
+PRODUCT=sharpen
 
 HFILES= 
-CFILES= sharpen_grid.c
-#CFILES= sharpen.c
+#CFILES= sharpen_grid.c
+CFILES= sharpen.c
 
 SRCS= ${HFILES} ${CFILES}
 OBJS= ${CFILES:.c=.o}

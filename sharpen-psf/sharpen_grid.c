@@ -158,16 +158,16 @@ int main(int argc, char *argv[])
 
     header[21]='\0';
 
-    //printf("header = %s\n", header); 
+    printf("header = %s\n", header); 
 
     // Read RGB data
     for(i=0; i<IMG_HEIGHT; i++)
     {
         for(j=0; j<IMG_WIDTH; j++)
         {
-            read(fdin, (void *)&R[i][j], 1); convR[i][j]=R[i][j];
-            read(fdin, (void *)&G[i][j], 1); convG[i][j]=G[i][j];
-            read(fdin, (void *)&B[i][j], 1); convB[i][j]=B[i][j];
+            if(0 > read(fdin, (void *)&R[i][j], 1)) printf("Error reading R pixel\n"); convR[i][j]=R[i][j];
+            if(0 > read(fdin, (void *)&G[i][j], 1)) printf("Error reading G pixel\n"); convG[i][j]=G[i][j];
+            if(0 > read(fdin, (void *)&B[i][j], 1)) printf("Error reading B pixel\n"); convB[i][j]=B[i][j];
         }
     }
     printf("source file %s read\n", argv[1]);
@@ -219,16 +219,16 @@ int main(int argc, char *argv[])
     }
 
     printf("starting sink file %s write\n", argv[2]);
-    write(fdout, (void *)header, 21);
+    if(0 > write(fdout, (void *)header, 21)) printf("Error writing sink file\n");
 
     // Write RGB data
     for(i=0; i<IMG_HEIGHT; i++)
     {
         for(j=0; j<IMG_WIDTH; j+=1)
         {
-            write(fdout, (void *)&convR[i][j], 1);
-            write(fdout, (void *)&convG[i][j], 1);
-            write(fdout, (void *)&convB[i][j], 1);
+            if(0 > write(fdout, (void *)&convR[i][j], 1)) printf("Error writing R pixel\n");
+            if(0 > write(fdout, (void *)&convG[i][j], 1)) printf("Error writing G pixel\n");
+            if(0 > write(fdout, (void *)&convB[i][j], 1)) printf("Error writing B pixel\n");
         }
     }
 
